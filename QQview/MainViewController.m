@@ -21,9 +21,7 @@
 }
 @property(strong,nonatomic)UIPanGestureRecognizer *panGesture;
 @end
-
 @implementation MainViewController
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     UIImageView *imageview=[[UIImageView alloc]initWithFrame:self.view.frame];
@@ -72,7 +70,6 @@
         sender.view.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,[UIScreen mainScreen].bounds.size.height/2);
         Coefficient=0;
     }];
-    
 }
 -(void)sendRightstr:(NSString *)str{
     center.showLable.text=str;
@@ -90,48 +87,57 @@
         Coefficient=0;
     }];
 }
+
 -(void)panHandle:(UIPanGestureRecognizer *)sender{
     CGPoint translation=[sender translationInView:self.view];
-    Coefficient=fabs( translation.x*0.8+Coefficient);
+    Coefficient= translation.x*0.8+Coefficient;
     sender.view.center=CGPointMake(translation.x+sender.view.center.x, translation.y+sender.view.center.y);
-    sender.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1-Coefficient/1000, 1-Coefficient/1000);
+    sender.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1-fabs(Coefficient)/1000, 1-fabs(Coefficient)/1000);
+    left.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 0.6+Coefficient/1000, 0.6+Coefficient/1000);
+    right.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 0.6-Coefficient/1000, 0.6-Coefficient/1000);
     [sender setTranslation:CGPointMake(0, 0) inView:self.view];
-    
     //判断往哪边拖
     if (sender.view.frame.origin.x>0) {
-        [self showLeftView:sender.view];
+        showLeft=YES;
+        left.view.hidden=NO;
+        showRight=NO;
+        right.view.hidden=YES;
     }else{
-        [self showRightView:sender.view];
+        showLeft=NO;
+        left.view.hidden=YES;
+        showRight=YES;
+        right.view.hidden=NO;
+    }
+    if (self.panGesture.state==UIGestureRecognizerStateEnded) {
+        if (sender.view.frame.origin.x>60) {
+             [self showLeftView:sender.view];
+        }else if (sender.view.frame.origin.x<-60){
+             [self showRightView:sender.view];
+        }else{
+            [UIView animateWithDuration:0.3 animations:^{
+                sender.view.transform = CGAffineTransformScale(CGAffineTransformIdentity,1,1);
+                sender.view.center = CGPointMake([UIScreen mainScreen].bounds.size.width/2,[UIScreen mainScreen].bounds.size.height/2);
+                Coefficient=0;
+            }];
+        }
     }
     
 }
 -(void)showLeftView:(UIView *)sender{
-    
-    showLeft=YES;
-    left.view.hidden=NO;
-    showRight=NO;
-    right.view.hidden=YES;
-    if (self.panGesture.state==UIGestureRecognizerStateEnded) {
         [UIView animateWithDuration:0.3 animations:^{
             sender.transform = CGAffineTransformScale(CGAffineTransformIdentity,0.8,0.8);
             sender.center = CGPointMake([UIScreen mainScreen].bounds.size.width,[UIScreen mainScreen].bounds.size.height/2);
+            left.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
+            right.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
         }];
-    }
-    
 }
 -(void)showRightView:(UIView *)sender{
-   
-    showLeft=NO;
-    left.view.hidden=YES;
-    showRight=YES;
-    right.view.hidden=NO;
-    if (self.panGesture.state==UIGestureRecognizerStateEnded) {
         [UIView animateWithDuration:0.3 animations:^{
             sender.transform = CGAffineTransformScale(CGAffineTransformIdentity,0.8,0.8);
             sender.center = CGPointMake(0,[UIScreen mainScreen].bounds.size.height/2);
+            left.view.transform=CGAffineTransformScale(CGAffineTransformIdentity,1, 1);
+            right.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
         }];
-    }
-    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
