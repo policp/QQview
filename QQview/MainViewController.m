@@ -33,19 +33,19 @@
     showRight=NO;
     right.view.hidden=YES;
     
-    right=[[RightViewController alloc]init];
+    right=[[RightViewController alloc]initWithNibName:@"RightViewController" bundle:nil];
     right.view.backgroundColor=[UIColor clearColor];
     [self addChildViewController:right];
     [right didMoveToParentViewController:self];
     [self.view addSubview:right.view];
     
-    left=[[LeftViewController alloc]init];
+    left=[[LeftViewController alloc]initWithNibName:@"LeftViewController" bundle:nil];
     left.view.backgroundColor=[UIColor clearColor];
     [self addChildViewController:left];
     [left didMoveToParentViewController:self];
     [self.view addSubview:left.view];
     
-    center=[[CenterViewController alloc]init];
+    center=[[CenterViewController alloc]initWithNibName:@"CenterViewController" bundle:nil];
     center.view.backgroundColor=[UIColor purpleColor];
     [self addChildViewController:center];
     [center didMoveToParentViewController:self];
@@ -92,17 +92,19 @@
     CGPoint translation=[sender translationInView:self.view];
     Coefficient= translation.x*0.8+Coefficient;
     sender.view.center=CGPointMake(translation.x+sender.view.center.x, translation.y+sender.view.center.y);
-    sender.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1-fabs(Coefficient)/1000, 1-fabs(Coefficient)/1000);
+    
     left.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 0.6+Coefficient/1000, 0.6+Coefficient/1000);
     right.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 0.6-Coefficient/1000, 0.6-Coefficient/1000);
     [sender setTranslation:CGPointMake(0, 0) inView:self.view];
     //判断往哪边拖
     if (sender.view.frame.origin.x>0) {
+        sender.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1-Coefficient/1000, 1-Coefficient/1000);
         showLeft=YES;
         left.view.hidden=NO;
         showRight=NO;
         right.view.hidden=YES;
     }else{
+        sender.view.transform=CGAffineTransformScale(CGAffineTransformIdentity, 1+Coefficient/1000, 1+Coefficient/1000);
         showLeft=NO;
         left.view.hidden=YES;
         showRight=YES;
