@@ -108,6 +108,7 @@
         showRight=YES;
         right.view.hidden=NO;
     }
+    //修复滑动手势不灵敏问题
     if (self.panGesture.state==UIGestureRecognizerStateEnded) {
         if (sender.view.frame.origin.x>60) {
              [self showLeftView:sender.view];
@@ -153,5 +154,8 @@
     // Pass the selected object to the new view controller.
 }
 */
-
+-(void)dealloc{
+    //remove all controller
+    
+}
 @end
